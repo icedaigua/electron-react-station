@@ -1,44 +1,118 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+react部分参考[Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# 1、步骤
 
-In the project directory, you can run:
+## 1.1 安装react
 
-### `npm start`
+安装create-react-app
+    
+    npm install --global create-react-app
+创建react工程
+    
+    create-react-app prjname
+进入prjname目录
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    npm start
+启动一个开发模式的服务器，同时也会让你的浏览器自动打开了一个网页，指向本机地址http://localhost:3000/
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## 1.2 electron+react
 
-### `npm test`
+### 1.2.1 安装electron
+创建后，安装electron
+    
+    npm install electron --save-dev
+安装过程中如果出错，可以清理缓存
+    
+    npm cache clean -f
+安装完成后，在package.json中增加启动项
+```json
+  "scripts": {
+    "electron-start": "electron ." 
+  }
+```
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+安装完成后，自己在React项目的根目录创建Electron的启动文件main.js和index.html两个文件。也可以直接从[模板工程](https://github.com/electron/electron-quick-start)下载
 
-### `npm run build`
+### 1.2.2 修改启动配置
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+在React项目中的package.json文件中增加main字段，值为"main.js"
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```json
+{
+  "name": "electron-react-station",
+  "version": "0.1.0",
+  "private": true,
+  "main":"main.js",
+  "dependencies": {
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+修改main.js中的win.loadURL，改为
+```js
+mainWindow.loadURL(url.format({
+pathname: path.join(__dirname, './build/index.html'), protocol: 'file:', slashes: true }))
+```
 
-### `npm run eject`
+    npm run build
+    npm run electron-start
+启动程序.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 1.2.3 修改启动页面
+上述启动后，是一个空页面，在文件package.json中添加字段 
+```json
+"homepage":"."
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 1.3 热调试
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+在main.js文件中将启动页修改为 http://localhost:3000/
+```js
+mainWindow.loadURL('http://localhost:3000/')
+```
+启动两个终端，一个终端启动
+    
+    npm start
+另一个终端启动
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    npm run electron-start
+这样在electron中就可以热调试了。
 
-## Learn More
+在package.json中定义个DEV字段，设置为true/false，然后修改main.js
+```js
+const pkg = require('./package.json') // 引用package.json 
+//判断是否是开发模式 
+if(pkg.DEV) { 
+  win.loadURL("http://localhost:3000/")
+} else { 
+  win.loadURL(url.format({
+    pathname:path.join(__dirname, './build/index.html'), 
+    protocol:'file:', 
+    slashes:true 
+  }))
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+# 2 单独安装electron
+
+```json
+在文件目录下，手动创建`package.json`
+    
+    {
+        "name": "sample", 
+        "version": "1.0.0", 
+        "description": "", 
+        "main": "main.js", 
+        "scripts": {
+            "start": "electron ."
+        }, 
+        "author": "", 
+        "license": "UNLICENSED"
+    }
+```
+
+创建后，安装electron
+    
+    npm install electron --save-dev
+
+也可以直接从Github下载[模板工程](https://github.com/electron/electron-quick-start)
