@@ -4,6 +4,8 @@ const path = require('path')
 const url = require('url')
 const pkg = require('./package.json') // 引用package.json 
 
+const ipc = require('electron').ipcMain
+const dialog = require('electron').dialog
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,7 +24,7 @@ function createWindow () {
     mainWindow.loadURL("http://localhost:3000/")
   } else { 
     mainWindow.loadURL(url.format({
-      pathname:path.join(__dirname, './build/index.html'), 
+      pathname:path.join(__dirname, './public/index.html'), 
       protocol:'file:', 
       slashes:true 
     }))
@@ -60,8 +62,7 @@ app.on('activate', function () {
   if (mainWindow === null) createWindow()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+
 
 let pyProc = null
 
@@ -71,6 +72,8 @@ const createPyProc = () => {
   pyProc = require('child_process').spawn('python', [script, port])
   if (pyProc != null) {
     console.log('python process success')
+  } else{  
+      dialog.showErrorBox('python进程启动错误', '错误')
   }
 }
 

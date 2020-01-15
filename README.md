@@ -76,11 +76,11 @@ mainWindow.loadURL('http://localhost:3000/')
     npm run electron-start
 这样在electron中就可以热调试了。
 
-在package.json中定义个DEV字段，设置为true/false，然后修改main.js
+在package.json中定义个devOpt字段，设置为true/false，然后修改main.js
 ```js
 const pkg = require('./package.json') // 引用package.json 
 //判断是否是开发模式 
-if(pkg.DEV) { 
+if(pkg.devOpt) { 
   win.loadURL("http://localhost:3000/")
 } else { 
   win.loadURL(url.format({
