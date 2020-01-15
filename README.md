@@ -91,6 +91,69 @@ if(pkg.DEV) {
 }
 ```
 
+## 1.4 建立python后台
+### 1.4.1 安装zerorpc
+    
+    pip install zerorpc
+或者
+    
+    conda install -c ampelproject zerorpc
+
+创建py文件，内容如下
+```python
+
+import zerorpc
+class HelloRPC(object):
+    def hello(self, name):
+        return "Hello, %s" % name
+
+s = zerorpc.Server(HelloRPC())
+s.bind("tcp://0.0.0.0:4242")
+s.run()
+```
+命令行里运行python api.py。另一个终端输入
+    
+    zerorpc tcp://localhost:4242 hello NXB,
+如果得到Hello,NXB则没有问题
+
+### 1.4.2 electron与python通信
+在main.js中调用创建python进程
+```js
+let pyProc = null
+
+const createPyProc = () => {
+  let port = '4242'
+  let script = path.join(__dirname, 'python', 'netrpc.py')
+  pyProc = require('child_process').spawn('python', [script, port])
+  if (pyProc != null) {
+    console.log('python process success')
+  }
+}
+
+const exitPyProc = () => {
+  pyProc.kill()
+  pyProc = null
+  console.log('python process exit success')
+}
+
+app.on('will-quit', exitPyProc)
+```
+
+在ready任务中调用
+```js
+app.on('ready', function(){
+  createWindow()
+  createPyProc()
+})
+```
+运行
+     npm run electron-start
+另一个终端输入
+    
+    zerorpc tcp://localhost:4242 hello NXB,
+如果得到Hello,NXB则没有问题
+
+
 
 
 # 2 单独安装electron

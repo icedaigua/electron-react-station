@@ -3,7 +3,7 @@ const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 const pkg = require('./package.json') // 引用package.json 
-//判断是否是开发模式 
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,11 +14,9 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
   })
 
+  //判断是否是开发模式 
   // and load the index.html of the app.
   if(pkg.devOpt) { 
     mainWindow.loadURL("http://localhost:3000/")
@@ -44,7 +42,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function(){
+  createWindow()
+  createPyProc()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -61,3 +62,23 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+let pyProc = null
+
+const createPyProc = () => {
+  let port = '4242'
+  let script = path.join(__dirname, 'python', 'netrpc.py')
+  pyProc = require('child_process').spawn('python', [script, port])
+  if (pyProc != null) {
+    console.log('python process success')
+  }
+}
+
+const exitPyProc = () => {
+  pyProc.kill()
+  pyProc = null
+  console.log('python process exit success')
+}
+
+// app.on('ready', createPyProc)
+app.on('will-quit', exitPyProc)

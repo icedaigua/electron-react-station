@@ -2,9 +2,9 @@
   "name": "electron-react-station",
   "version": "0.1.0",
   "private": true,
-  "main":"main.js",
-  "devOpt":true,
-  "homepage":".",
+  "main": "main.js",
+  "devOpt": true,
+  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-start": "electron ." 
+    "electron-start": "electron .",
+    "pack-app": "./node_modules/.bin/electron-packager . --overwrite --ignore=python$"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,6 +37,7 @@
     ]
   },
   "devDependencies": {
-    "electron": "^7.1.8"
+    "electron": "^7.1.8",
+    "electron-packager": "^14.2.0"
   }
 }
