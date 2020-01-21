@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
-  "devOpt": false,
+  "devOpt": true,
   "homepage": ".",
   "dependencies": {
     "react": "^16.12.0",
