@@ -2,7 +2,7 @@
   "name": "electron-react-station",
   "version": "0.1.0",
   "private": true,
-  "main":"main.js",
+  "main": "main.js",
   "dependencies": {
     "electron": "^3.0.10",
     "react": "^16.6.3",
